@@ -167,4 +167,32 @@ namespace ConsoleApp;
     File.WriteAllText("output.json", outputJson.ToString());    
     }
 
+
+    //extract json from multijon for the provided  id
+    public static JsonObject GetJsonById(string multiJson, string id)
+    {
+        string[] jsonObjects = multiJson.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string jsonObj in jsonObjects)
+        {
+            JsonNode rootNode = JsonNode.Parse(jsonObj);
+            if (rootNode["<first-level property>"] is JsonObject mappingOutputNode)
+            {
+                if (mappingOutputNode["<second-level property"] is JsonArray itBitItNode)
+                {
+                    foreach (JsonNode bitItNode in itBitItNode)
+                    {
+                        if (bitItNode["<ID>"]?.ToString() == id)
+                        {
+                            return JsonNode.Parse(jsonObj) as JsonObject;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+   
+
 }
