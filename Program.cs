@@ -168,7 +168,7 @@ namespace ConsoleApp;
     }
 
 
-    //extract json from multijon for the provided  id
+    //extract json from multijon for the provided id
     public static JsonObject GetJsonById(string multiJson, string id)
     {
         string[] jsonObjects = multiJson.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -191,6 +191,32 @@ namespace ConsoleApp;
             }
         }
 
+        return null;
+    }
+
+    //extract json for the provided source transaction id
+    public static JsonObject GetJsonById(string multiJson, string id)
+    {
+        string[] jsonObjects = multiJson.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        string searchPattern = @"\""ID\""\s*:\s*""" + Regex.Escape(id) + @"""";
+
+
+        foreach (string jsonObj in jsonObjects)
+        {
+            if (Regex.IsMatch(jsonObj, searchPattern))
+            {
+                try
+                {
+                    JsonObject jsonObject = (JsonObject)JsonNode.Parse(jsonObj);
+                    return jsonObject;
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // JSON object is not valid
+                    throw new JsonReaderException("Error parsing JSON", ex);
+                }
+            }
+        }
         return null;
     }
    
